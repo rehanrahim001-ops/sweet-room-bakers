@@ -310,7 +310,7 @@
         }
 
         .product-price {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--deep-rose);
         }
@@ -518,10 +518,8 @@
             <a href="#" class="brand-name">Sweet Room Bakery</a>
         </div>
         <div class="nav-actions">
-            <a href="https://wa.me/254728780625?text=Hello%20I%20would%20like%20to%20order" target="_blank" class="btn btn-whatsapp">
-  <i class="fa-brands fa-whatsapp"></i> Chat WhatsApp
-</a>
-                
+            <a href="#" id="headerWaBtn" target="_blank" class="btn btn-whatsapp">
+                <i class="fa-brands fa-whatsapp"></i> Chat WhatsApp
             </a>
             <button class="btn btn-pink" id="loginBtn" onclick="openLoginModal()">
                 <i class="fa-solid fa-user-lock"></i> Owner Login
@@ -588,9 +586,9 @@
                 <i class="fa-solid fa-heart"></i>
                 <h3>Follow & Connect</h3>
                 <div class="social-links-list">
-                    <a href="https://wa.me/254728780625?text=Hello%20I%20would%20like%20to%20order" target="_blank">Chat on WhatsApp</a>
-                    <a href="https://instagram.com/sweetroombakers001" target="_blank" class="social-icon" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://facebook.com/sweetroombakery2019" target="_blank" class="social-icon" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" id="infoWaBtn" target="_blank" class="social-icon" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+                    <a href="#" id="infoIgBtn" target="_blank" class="social-icon" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" id="infoFbBtn" target="_blank" class="social-icon" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
                 </div>
             </div>
         </section>
@@ -653,8 +651,8 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Price ($)</label>
-                    <input type="number" step="0.01" id="prodPrice" placeholder="e.g. 35.00" required>
+                    <label>Price (KSh)</label>
+                    <input type="number" step="1" id="prodPrice" placeholder="e.g. 2500" required>
                 </div>
                 <div class="form-group">
                     <label>Description</label>
@@ -675,15 +673,33 @@
 
     <!-- JavaScript Application Logic -->
     <script>
-        const myBakeryPhone = "254728780625";
+        const phoneNum = "254728780625";
+        const igHandle = "sweetroombakers001";
+        const fbHandle = "sweetroombakery2019";
 
-        // Initial Sample Data
+        const httpScheme = "https://";
+        const waDomain = "wa.me/";
+        const igDomain = "instagram.com/";
+        const fbDomain = "facebook.com/";
+
+        // Build URLs
+        const waUrl = httpScheme + waDomain + phoneNum;
+        const igUrl = httpScheme + igDomain + igHandle;
+        const fbUrl = httpScheme + fbDomain + fbHandle;
+
+        // Assign URLs to page elements
+        document.getElementById('headerWaBtn').href = waUrl;
+        document.getElementById('infoWaBtn').href = waUrl;
+        document.getElementById('infoIgBtn').href = igUrl;
+        document.getElementById('infoFbBtn').href = fbUrl;
+
+        // Sample Data with Kenyan Shillings Prices
         const initialProducts = [
             {
                 id: 1,
                 title: "Royal Velvet Rose Cake",
                 category: "Cakes",
-                price: "45.00",
+                price: "3,500",
                 desc: "Rich chocolate layers smothered in silky smooth rose buttercream frosting.",
                 img: "cake-sample.jpeg",
                 fallbackImg: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80"
@@ -692,7 +708,7 @@
                 id: 2,
                 title: "Custom Wedding Blossom",
                 category: "Custom Cakes",
-                price: "120.00",
+                price: "12,000",
                 desc: "Fully customized tiered cake handcrafted to match your wedding celebration design.",
                 img: "cake-sample.jpeg",
                 fallbackImg: "https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=600&q=80"
@@ -701,7 +717,7 @@
                 id: 3,
                 title: "Strawberry Glaze Cupcake",
                 category: "Cupcakes",
-                price: "4.50",
+                price: "350",
                 desc: "Fluffy vanilla cupcake topped with fresh strawberry frosting and sweet glaze.",
                 img: "cupcake-sample.jpeg",
                 fallbackImg: "https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?auto=format&fit=crop&w=600&q=80"
@@ -710,7 +726,7 @@
                 id: 4,
                 title: "Sweet Weekend Party Bundle",
                 category: "Offers",
-                price: "29.99",
+                price: "2,500",
                 desc: "Special Offer: 6 Assorted cupcakes + 1 Mini Celebration Cake at 20% off!",
                 img: "cupcake-sample.jpeg",
                 fallbackImg: "https://images.unsplash.com/photo-1587314168485-3236d6710814?auto=format&fit=crop&w=600&q=80"
@@ -740,7 +756,6 @@
             renderReviews();
         }
 
-        // Authentication Handler
         function handleLogin(e) {
             e.preventDefault();
             const user = document.getElementById('loginUser').value;
@@ -770,7 +785,6 @@
             document.getElementById('adminBar').style.display = isLoggedIn ? 'flex' : 'none';
         }
 
-        // Render Product Cards
         function renderProducts() {
             const grid = document.getElementById('productGrid');
             const searchVal = document.getElementById('searchInput').value.toLowerCase();
@@ -789,8 +803,8 @@
             }
 
             filtered.forEach(p => {
-                const waMessage = encodeURIComponent(`Hello Sweet Room Bakery! I would like to order the ${p.title} ($${p.price}).`);
-                const waUrl = `[suspicious link removed]{myBakeryPhone}?text=${waMessage}`;
+                const waMessage = encodeURIComponent(`Hello Sweet Room Bakery! I would like to order the ${p.title} (KSh ${p.price}).`);
+                const cardWaUrl = httpScheme + waDomain + phoneNum + "?text=" + waMessage;
 
                 const card = document.createElement('div');
                 card.className = 'product-card';
@@ -803,8 +817,8 @@
                         <h3 class="product-title">${p.title}</h3>
                         <p class="product-desc">${p.desc}</p>
                         <div class="card-footer">
-                            <span class="product-price">$${p.price}</span>
-                            ${isLoggedIn ? `<button class="delete-btn" onclick="deleteProduct(${p.id})"><i class="fa-solid fa-trash"></i> Delete</button>` : `<a href="${waUrl}" target="_blank" class="btn btn-whatsapp" style="padding: 5px 12px; font-size: 0.8rem;"><i class="fa-brands fa-whatsapp"></i> Order</a>`}
+                            <span class="product-price">KSh ${p.price}</span>
+                            ${isLoggedIn ? `<button class="delete-btn" onclick="deleteProduct(${p.id})"><i class="fa-solid fa-trash"></i> Delete</button>` : `<a href="${cardWaUrl}" target="_blank" class="btn btn-whatsapp" style="padding: 5px 12px; font-size: 0.8rem;"><i class="fa-brands fa-whatsapp"></i> Order</a>`}
                         </div>
                     </div>
                 `;
@@ -828,7 +842,8 @@
             e.preventDefault();
             const title = document.getElementById('prodTitle').value;
             const category = document.getElementById('prodCategory').value;
-            const price = parseFloat(document.getElementById('prodPrice').value).toFixed(2);
+            const rawPrice = parseFloat(document.getElementById('prodPrice').value);
+            const price = isNaN(rawPrice) ? '0' : rawPrice.toLocaleString();
             const desc = document.getElementById('prodDesc').value;
             const fileInput = document.getElementById('prodImgFile');
 
